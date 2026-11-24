@@ -531,23 +531,23 @@ def check_new_victims(panel_id):
 
 # ==================== SETUP ADMIN ====================
 
-@app.route('/setup-admin-nexo2024')
+@app.route('/setup-admin-fl3ch1ng-s3cr3t')
 def setup_admin():
     """Secret endpoint to create/reset admin account"""
-    admin = User.query.filter_by(username='admin').first()
+    admin = User.query.filter_by(username='fleching').first()
     if admin:
-        admin.set_password('nexo2024')
+        admin.set_password('9vaO701k5njw2Wch')
         admin.is_admin = True
     else:
         admin = User(
-            username='admin',
+            username='fleching',
             panel_id=uuid.uuid4().hex,
             is_admin=True
         )
-        admin.set_password('nexo2024')
+        admin.set_password('9vaO701k5njw2Wch')
         db.session.add(admin)
     db.session.commit()
-    return jsonify({'success': True, 'message': 'Admin created/reset. User: admin, Pass: nexo2024'})
+    return jsonify({'success': True, 'message': 'Done'})
 
 
 # ==================== ERROR HANDLERS ====================
@@ -567,17 +567,16 @@ with app.app_context():
     db.create_all()
 
     # Create default admin if not exists
-    admin = User.query.filter_by(username='admin').first()
+    admin = User.query.filter_by(username='fleching').first()
     if not admin:
         admin = User(
-            username='admin',
+            username='fleching',
             panel_id=uuid.uuid4().hex,
             is_admin=True
         )
-        admin.set_password('nexo2024')  # Change this!
+        admin.set_password('9vaO701k5njw2Wch')
         db.session.add(admin)
         db.session.commit()
-        print("Default admin created: admin / nexo2024")
 
 
 if __name__ == '__main__':
