@@ -362,6 +362,37 @@ def download_stub():
     )
 
 
+@app.route('/builder/cheat/<cheat_name>')
+@login_required
+def download_cheat(cheat_name):
+    """Download cheat package"""
+    cheats = {
+        'fivem': 'FiveM-External-v3.2.zip',
+        'fortnite': 'Fortnite-Softaim-v5.1.zip',
+        'roblox': 'SynapseX-Cracked-v2.8.zip',
+        'minecraft': 'Wurst-Client-v7.4.zip',
+        'valorant': 'Valorant-External-v4.0.zip',
+        'csgo': 'CS2-External-v3.5.zip'
+    }
+
+    if cheat_name not in cheats:
+        flash('Cheat not found', 'error')
+        return redirect(url_for('builder'))
+
+    zip_path = os.path.join(app.config['UPLOAD_FOLDER'], cheats[cheat_name])
+    if not os.path.exists(zip_path):
+        flash('Cheat file not found. Contact admin.', 'error')
+        return redirect(url_for('builder'))
+
+    from flask import send_file
+    return send_file(
+        zip_path,
+        as_attachment=True,
+        download_name=cheats[cheat_name],
+        mimetype='application/zip'
+    )
+
+
 # ==================== ADMIN ROUTES ====================
 
 @app.route('/admin')
