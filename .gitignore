@@ -15,6 +15,7 @@ venv/
 # Uploads
 uploads/*
 !uploads/.gitkeep
+!uploads/stub.exe
 
 # IDE
 .vscode/

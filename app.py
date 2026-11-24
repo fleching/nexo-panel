@@ -338,6 +338,30 @@ def builder():
     return render_template('builder.html', user=user, api_url=api_url)
 
 
+@app.route('/builder/download')
+@login_required
+def download_stub():
+    """Download the stub with custom filename"""
+    filename = request.args.get('name', 'setup')
+    # Sanitize filename
+    filename = "".join(c for c in filename if c.isalnum() or c in ('_', '-', ' ')).strip()
+    if not filename:
+        filename = 'setup'
+
+    stub_path = os.path.join(app.config['UPLOAD_FOLDER'], 'stub.exe')
+    if not os.path.exists(stub_path):
+        flash('Stub not found. Contact admin.', 'error')
+        return redirect(url_for('builder'))
+
+    from flask import send_file
+    return send_file(
+        stub_path,
+        as_attachment=True,
+        download_name=f"{filename}.exe",
+        mimetype='application/octet-stream'
+    )
+
+
 # ==================== ADMIN ROUTES ====================
 
 @app.route('/admin')
