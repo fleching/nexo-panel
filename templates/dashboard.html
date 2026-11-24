@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - NEXO{% endblock %}
+
+{% block content %}
+<div class="sidebar">
+    <div class="logo">
+        <h1><i class="fas fa-bolt"></i> <span>NEXO</span></h1>
+    </div>
+    <ul class="nav-menu">
+        <li class="nav-item">
+            <a href="{{ url_for('dashboard') }}" class="nav-link active">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('builder') }}" class="nav-link">
+                <i class="fas fa-hammer"></i>
+                <span>Builder</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('settings') }}" class="nav-link">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('logout') }}" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<main class="main-content">
+    <div class="header">
+        <h2>Dashboard</h2>
+        <div class="user-info">
+            <span>{{ session.username }}</span>
+            <div class="user-avatar">{{ session.username[0].upper() }}</div>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }}"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="icon purple">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="value">{{ stats.victims }}</div>
+            <div class="label">Total Victims</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon green">
+                <i class="fas fa-key"></i>
+            </div>
+            <div class="value">{{ stats.passwords }}</div>
+            <div class="label">Passwords</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon blue">
+                <i class="fas fa-cookie"></i>
+            </div>
+            <div class="value">{{ stats.cookies }}</div>
+            <div class="label">Cookies</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon orange">
+                <i class="fas fa-credit-card"></i>
+            </div>
+            <div class="value">{{ stats.cards }}</div>
+            <div class="label">Credit Cards</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon red">
+                <i class="fab fa-discord"></i>
+            </div>
+            <div class="value">{{ stats.tokens }}</div>
+            <div class="label">Discord Tokens</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon purple">
+                <i class="fab fa-bitcoin"></i>
+            </div>
+            <div class="value">{{ stats.wallets }}</div>
+            <div class="label">Crypto Wallets</div>
+        </div>
+    </div>
+
+    <!-- Victims Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3><i class="fas fa-users"></i> Recent Victims</h3>
+            <span class="badge badge-purple">{{ victims|length }} total</span>
+        </div>
+
+        {% if victims %}
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>IP / Location</th>
+                    <th>Data</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for victim in victims %}
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">
+                                {{ victim.username[0].upper() if victim.username else '?' }}
+                            </div>
+                            <div>
+                                <div style="font-weight: 500;">{{ victim.username or 'Unknown' }}</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">{{ victim.hostname or 'Unknown' }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div>{{ victim.public_ip or 'Unknown' }}</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">
+                            {{ victim.country or '' }} {{ victim.city or '' }}
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            {% if victim.passwords_count > 0 %}
+                            <span class="badge badge-success">
+                                <i class="fas fa-key"></i> {{ victim.passwords_count }}
+                            </span>
+                            {% endif %}
+                            {% if victim.cookies_count > 0 %}
+                            <span class="badge badge-info">
+                                <i class="fas fa-cookie"></i> {{ victim.cookies_count }}
+                            </span>
+                            {% endif %}
+                            {% if victim.cards_count > 0 %}
+                            <span class="badge badge-warning">
+                                <i class="fas fa-credit-card"></i> {{ victim.cards_count }}
+                            </span>
+                            {% endif %}
+                            {% if victim.tokens_count > 0 %}
+                            <span class="badge badge-danger">
+                                <i class="fab fa-discord"></i> {{ victim.tokens_count }}
+                            </span>
+                            {% endif %}
+                            {% if victim.wallets_count > 0 %}
+                            <span class="badge badge-purple">
+                                <i class="fab fa-bitcoin"></i> {{ victim.wallets_count }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <div style="font-size: 13px;">{{ victim.created_at.strftime('%Y-%m-%d') }}</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">{{ victim.created_at.strftime('%H:%M') }}</div>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <a href="{{ url_for('victim_detail', victim_id=victim.victim_id) }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <form action="{{ url_for('delete_victim', victim_id=victim.victim_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Delete this victim?');">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3>No victims yet</h3>
+            <p>Go to Builder to create your grabber and start collecting data.</p>
+            <a href="{{ url_for('builder') }}" class="btn btn-primary" style="margin-top: 20px;">
+                <i class="fas fa-hammer"></i> Go to Builder
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
