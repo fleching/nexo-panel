@@ -228,9 +228,9 @@
     <source src="https://cdn.pixabay.com/audio/2022/03/24/audio_d5e8a04695.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Sound Enable Button -->
-<div id="enableSound" style="position: fixed; bottom: 20px; right: 20px; background: var(--purple-primary); color: white; padding: 15px 25px; border-radius: 12px; cursor: pointer; z-index: 9999; box-shadow: 0 5px 20px rgba(147,51,234,0.4);">
-    <i class="fas fa-volume-up"></i> Click to enable sound alerts
+<!-- Sound Enable Button (fallback) -->
+<div id="enableSound" style="position: fixed; bottom: 20px; right: 20px; background: var(--purple-primary); color: white; padding: 15px 25px; border-radius: 12px; cursor: pointer; z-index: 9999; box-shadow: 0 5px 20px rgba(147,51,234,0.4); display: none;">
+    <i class="fas fa-volume-up"></i> Click anywhere to enable sounds
 </div>
 
 {% endblock %}
@@ -239,20 +239,43 @@
 <script>
     let soundEnabled = false;
     let lastVictimCount = {{ victims|length }};
+    const sound = document.getElementById('notifSound');
+    const enableBtn = document.getElementById('enableSound');
 
-    // Enable sound on click
-    document.getElementById('enableSound').addEventListener('click', function() {
-        soundEnabled = true;
-        this.style.background = '#22c55e';
-        this.innerHTML = '<i class="fas fa-check"></i> Sound enabled!';
+    // Try to auto-enable sound
+    function tryEnableSound() {
+        sound.volume = 0.01;
+        sound.play().then(() => {
+            // Autoplay worked! Sound is enabled
+            soundEnabled = true;
+            sound.pause();
+            sound.currentTime = 0;
+            sound.volume = 1.0;
+            enableBtn.style.display = 'none';
+            console.log('🔊 Sound auto-enabled!');
+        }).catch(() => {
+            // Autoplay blocked, show button and wait for any click
+            enableBtn.style.display = 'block';
+            console.log('🔇 Waiting for user interaction to enable sound...');
+        });
+    }
 
-        // Test sound
-        document.getElementById('notifSound').play();
+    // Enable sound on ANY click anywhere on the page
+    document.addEventListener('click', function enableOnClick() {
+        if (!soundEnabled) {
+            soundEnabled = true;
+            sound.volume = 0.3;
+            sound.play().then(() => {
+                enableBtn.style.background = '#22c55e';
+                enableBtn.innerHTML = '<i class="fas fa-check"></i> Sound enabled!';
+                setTimeout(() => enableBtn.style.display = 'none', 1500);
+            }).catch(() => {});
+            sound.volume = 1.0;
+        }
+    }, { once: false });
 
-        setTimeout(() => {
-            this.style.display = 'none';
-        }, 2000);
-    });
+    // Try auto-enable on page load
+    tryEnableSound();
 
     // Check for new victims every 3 seconds
     setInterval(() => {
@@ -260,9 +283,10 @@
             .then(r => r.json())
             .then(data => {
                 if (data.count > 0) {
-                    // Play sound if enabled
+                    // Play sound (will work if enabled)
                     if (soundEnabled) {
-                        document.getElementById('notifSound').play();
+                        sound.currentTime = 0;
+                        sound.play().catch(() => {});
                     }
 
                     // Show notification
