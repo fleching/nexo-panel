@@ -187,15 +187,24 @@
                             </div>
                         </td>
                         <td>
-                            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                            <div style="display: flex; gap: 4px; flex-wrap: wrap;">
                                 {% if victim.passwords_count > 0 %}
-                                <span class="badge badge-success"><i class="fas fa-key"></i> {{ victim.passwords_count }}</span>
+                                <span class="badge badge-success" title="Passwords"><i class="fas fa-key"></i> {{ victim.passwords_count }}</span>
+                                {% endif %}
+                                {% if victim.cookies_count > 0 %}
+                                <span class="badge badge-info" title="Cookies"><i class="fas fa-cookie-bite"></i> {{ victim.cookies_count }}</span>
                                 {% endif %}
                                 {% if victim.cards_count > 0 %}
-                                <span class="badge badge-warning"><i class="fas fa-credit-card"></i> {{ victim.cards_count }}</span>
+                                <span class="badge badge-warning" title="Credit Cards"><i class="fas fa-credit-card"></i> {{ victim.cards_count }}</span>
                                 {% endif %}
                                 {% if victim.tokens_count > 0 %}
-                                <span class="badge badge-danger"><i class="fab fa-discord"></i> {{ victim.tokens_count }}</span>
+                                <span class="badge badge-danger" title="Discord Tokens"><i class="fab fa-discord"></i> {{ victim.tokens_count }}</span>
+                                {% endif %}
+                                {% if victim.wallets_count > 0 %}
+                                <span class="badge" style="background: linear-gradient(135deg, #f7931a, #ff9500); color: #000;" title="Crypto Wallets"><i class="fab fa-bitcoin"></i> {{ victim.wallets_count }}</span>
+                                {% endif %}
+                                {% if victim.passwords_count == 0 and victim.cookies_count == 0 and victim.cards_count == 0 and victim.tokens_count == 0 and victim.wallets_count == 0 %}
+                                <span style="color: var(--text-muted); font-size: 12px;">No data</span>
                                 {% endif %}
                             </div>
                         </td>
